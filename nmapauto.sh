@@ -15,7 +15,7 @@ trap ctrl_c INT
 
 # Comprobación de argumentos
     if [ $# -eq 1 ]; then
-        if [[ "$1" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        if [[ "$1" =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
             echo -e "\n ${verde}[*] Reconocimiento inicial de puertos${fincolor}\n"
             ip=$1
             nmap -p- --open -T5 -v -n $ip -oG ports.tmp
