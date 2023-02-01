@@ -1,5 +1,5 @@
-Pequeño script para automatizar el reconocimiento de puertos con Nmap.
-Recuerda darle permisos de ejecución para poder ejecutarlo: ``chmod +x nmapauto.sh``
+Pequeño script para automatizar el reconocimiento de puertos con Nmap.   
+Recuerda darle permisos de ejecución para poder ejecutarlo: ``chmod +x nmapauto.sh``  
 El script requiere de privilegios para poder usarse.
 
 USO:  
