@@ -18,11 +18,15 @@ trap ctrl_c INT
         if [[ "$1" =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
             echo -e "\n ${verde}[*] Reconocimiento inicial de puertos${fincolor}\n"
             ip=$1
-            nmap -p- --open -T5 -v -n $ip -oG ports.tmp
+            nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
         else
             echo -e "\n ${rojo}[*] Introduce una IPv4 correcta${fincolor}\n" 
             exit 1
         fi
+    elif [ $# -eq 0 ]; then
+	   ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
+	   echo -e "\n ${verde}[*] La IP de la máquina víctima es $ip${fincolor}\n"
+	   nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
     else
         echo -e "\n ${rojo}[*] Introduce solamente la IP a escanear${fincolor}\n"
         exit 1
