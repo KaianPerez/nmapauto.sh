@@ -14,6 +14,10 @@ function ctrl_c(){
 trap ctrl_c INT
 
 # Comprobación de argumentos
+    if ! [ $(id -u) = 0 ]; then 
+	echo -e "\n ${rojo}[*] Debes utilizar sudo o ser root ${fincolor}\n"
+	exit 1 
+    fi
     if [ $# -eq 1 ]; then
         if [[ "$1" =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
             echo -e "\n ${verde}[*] Reconocimiento inicial de puertos${fincolor}\n"
