@@ -45,3 +45,4 @@ trap ctrl_c INT
     echo -e "\t[*] Puertos abiertos: $ports\n" >> InfoPuertos
     rm ports.tmp
     echo -e "\n ${verde}[*] Escaneo completado, se ha generado el fichero InfoPuertos\n${fincolor}" 
+    echo $ip | xclip -sel clip 
