@@ -28,9 +28,14 @@ trap ctrl_c INT
             exit 1
         fi
     elif [ $# -eq 0 ]; then
-	   ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
-	   echo -e "\n ${verde}[*] La IP de la máquina víctima es $ip${fincolor}\n"
-	   nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
+		ip a | grep "tun0" &>/dev/null && echo -e "\n ${rojo}[*] Estás bajo una VPN, introduce una IPv4 correcta ${fincolor}\n" && exit 1
+		ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
+			if [[ $ip = "" ]]; then
+			echo -e "\n ${rojo}[*] No se ha detectado ninguna IP de la máquina víctima ${fincolor}\n"
+			exit 1
+			fi
+		echo -e "\n ${verde}[*] La IP de la máquina víctima es $ip${fincolor}\n"
+		nmap -p- -sS --min-rate 5000 --open -Pn -vvv -n $ip -oG ports.tmp
     else
         echo -e "\n ${rojo}[*] Introduce solamente la IP a escanear${fincolor}\n"
         exit 1
