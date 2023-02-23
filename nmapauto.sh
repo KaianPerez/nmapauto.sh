@@ -19,23 +19,23 @@ trap ctrl_c INT
 	exit 1 
     fi
     if [ $# -eq 1 ]; then
-        if [[ "$1" =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
-            echo -e "\n ${verde}[*] Reconocimiento inicial de puertos \n${fincolor}"
-            ip=$1
-            nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
-        else
-            echo -e "\n ${rojo}[*] Introduce una IPv4 correcta \n${fincolor}" 
-            exit 1
+    	if [[ "$1" =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+        	echo -e "\n ${verde}[*] Reconocimiento inicial de puertos \n${fincolor}"
+            	ip=$1
+            	nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
+    	else
+            	echo -e "\n ${rojo}[*] Introduce una IPv4 correcta \n${fincolor}" 
+           	exit 1
         fi
     elif [ $# -eq 0 ]; then
-		ip a | grep "tun0" &>/dev/null && echo -e "\n ${rojo}[*] Estás bajo una VPN, introduce una IPv4 correcta \n${fincolor}" && exit 1
-		ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
-			if [[ $ip = "" ]]; then
-			echo -e "\n ${rojo}[*] No se ha detectado ninguna IP de la máquina víctima ${fincolor}\n"
-			exit 1
-			fi
-		echo -e "\n ${verde}[*] La IP de la máquina víctima es $ip${fincolor}\n"
-		nmap -p- -sS --min-rate 5000 --open -Pn -vvv -n $ip -oG ports.tmp
+	ip a | grep "tun0" &>/dev/null && echo -e "\n ${rojo}[*] Estás bajo una VPN, introduce una IPv4 correcta \n${fincolor}" && exit 1
+	ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
+	if [[ $ip = "" ]]; then
+		echo -e "\n ${rojo}[*] No se ha detectado ninguna IP de la máquina víctima ${fincolor}\n"
+		exit 1
+	fi
+	echo -e "\n ${verde}[*] La IP de la máquina víctima es $ip${fincolor}\n"
+	nmap -p- -sS --min-rate 5000 --open -Pn -vvv -n $ip -oG ports.tmp
     else
         echo -e "\n ${rojo}[*] Introduce solamente la IP a escanear${fincolor}\n"
         exit 1
@@ -43,10 +43,10 @@ trap ctrl_c INT
 
 # Escaneo de puertos
     ports="$(cat ports.tmp | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
-    		if [[ $ports = "" ]]; then
-			echo -e "\n ${rojo}[*] No se ha detectado ningún puerto abierto de la máquina víctima \n${fincolor}"
-			exit 1
-			fi
+    	if [[ $ports = "" ]]; then
+		echo -e "\n ${rojo}[*] No se ha detectado ningún puerto abierto de la máquina víctima \n${fincolor}"
+		exit 1
+	fi
     echo -e "\n ${verde}[*] Escaneo avanzado de servicios\n${fincolor}" 
     nmap -sCV -p$ports $ip -oN InfoPuertos
     sed -i '1,3d' InfoPuertos
