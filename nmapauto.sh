@@ -7,6 +7,7 @@ fincolor="\033[0m\e[0m"
 
 function ctrl_c(){
     echo -e "\n ${rojo}[*] Saliendo del programa \n${fincolor}"
+    rm ports.tmp
     exit 1
 }
 
@@ -25,11 +26,11 @@ trap ctrl_c INT
             	nmap -p- -sS --min-rate 5000 --open -Pn -v -n $ip -oG ports.tmp
     	else
             	echo -e "\n ${rojo}[*] Introduce una IPv4 correcta \n${fincolor}" 
-           	exit 1
+	           	exit 1
         fi
     elif [ $# -eq 0 ]; then
 	ip a | grep "tun0" &>/dev/null && echo -e "\n ${rojo}[*] Estás bajo una VPN, introduce una IPv4 correcta \n${fincolor}" && exit 1
-	ip=$(sudo arp-scan -l | grep "PCS" | grep -v $(hostname -I) | cut -f1 | tail -n1)
+	ip=$(sudo arp-scan -l | grep "PCS" | cut -f1 | tail -n1)
 	if [[ $ip = "" ]]; then
 		echo -e "\n ${rojo}[*] No se ha detectado ninguna IP de la máquina víctima ${fincolor}\n"
 		exit 1
@@ -45,8 +46,9 @@ trap ctrl_c INT
     ports="$(cat ports.tmp | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
     	if [[ $ports = "" ]]; then
 		echo -e "\n ${rojo}[*] No se ha detectado ningún puerto abierto de la máquina víctima \n${fincolor}"
+		rm ports.tmp
 		exit 1
-	fi
+		fi
     echo -e "\n ${verde}[*] Escaneo avanzado de servicios\n${fincolor}" 
     nmap -sCV -p$ports $ip -oN InfoPuertos
     sed -i '1,3d' InfoPuertos
